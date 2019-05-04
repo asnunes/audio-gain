@@ -8,14 +8,14 @@ def get_list_of_videos():
     dirpath = os.getcwd()
     list_of_files = os.listdir(dirpath)
     list_of_paths = [os.path.join(dirpath, filename) for filename in list_of_files]
-    suffix_list = ['.MOV', '.mp4', '.mov']
+    suffix_list = ['.MOV', '.mp4', '.mov', '.flv', '.avi', '.m4v']
     return [video_path for video_path in list_of_paths if get_file_suffix(video_path) in suffix_list]
 
 def get_file_suffix(path):
     return pathlib.Path(path).suffix
 
 def process_videos(dirpath, list_of_videos, gain):
-    output_path = os.path.join(dirpath, "audio_aumentado")
+    output_path = os.path.join(dirpath, "processed")
     if not os.path.exists(output_path):
         os.mkdir(output_path)
 
@@ -23,11 +23,11 @@ def process_videos(dirpath, list_of_videos, gain):
         process_video(output_path, video_file, gain, index, len(list_of_videos))
 
     print('-----------------------------------------------')
-    print('Concluído com sucesso!')
+    print('Done!')
 
 def process_video(outpath, video_file, gain, index, length):
     print('-----------------------------------------------')
-    print('Processando ' + video_file +': ' + str(index + 1) + ' de ' + str(length))
+    print('Processing ' + video_file +': ' + str(index + 1) + ' of ' + str(length))
     
     outfile = os.path.join(outpath, os.path.basename(video_file))
     cmd = ['ffmpeg', '-i', video_file, '-vcodec', 'copy', '-af', 'volume=' + str(gain) + 'dB',
@@ -56,11 +56,11 @@ def print_output(proc, index, length):
         print('-----------------------------------------------')
         print('Error: ' + error)
     print('-----------------------------------------------')
-    print('Concluído ' + str(index + 1) + ' de ' + str(length))
+    print('Done ' + str(index + 1) + ' of ' + str(length))
 
 gain = '-'
 while (not gain.isdigit() and gain != ''):
-    gain = input('Qual o ganho desejado? (padrão 25) ')
+    gain = input('Set Gain (default 25) ')
 gain = gain or 25
 list_of_videos = get_list_of_videos()
 process_videos(os.getcwd(), list_of_videos, gain)
